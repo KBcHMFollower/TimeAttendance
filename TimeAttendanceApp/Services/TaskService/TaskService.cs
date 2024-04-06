@@ -158,6 +158,8 @@ namespace TimeAttendanceApp.Services.TaskService
                 Task.StartDate = taskUpdateDto.startDate.Value;
             }
 
+            await _context.SaveChangesAsync();
+
             return Task;
         }
     }

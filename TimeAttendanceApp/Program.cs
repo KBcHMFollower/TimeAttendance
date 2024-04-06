@@ -41,7 +41,7 @@ internal class Program
 
     private static void Configurate(WebApplication app)
     {
-        app.UseMiddleware<ErrorHandingMiddleware>();
+        app.UseMiddleware<ErrorHandlingMiddleware>();
 
         if (!app.Environment.IsDevelopment())
         {

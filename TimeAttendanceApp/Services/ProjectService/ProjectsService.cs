@@ -21,7 +21,7 @@ namespace TimeAttendanceApp.Services.ProjectService
             Guid projectId = Guid.NewGuid();
             Project? project = new Project {Id = projectId, ProjectName = projCreateDto.name};
 
-            _context.Projects.Add(project);
+            await _context.Projects.AddAsync(project);
             await _context.SaveChangesAsync();
 
             Project? createdProj = await _context.Projects

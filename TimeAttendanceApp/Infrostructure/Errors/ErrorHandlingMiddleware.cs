@@ -4,10 +4,10 @@ using System.Text.Json;
 
 namespace TimeAttendanceApp.Infrostructure.Errors
 {
-    public class ErrorHandingMiddleware(
+    public class ErrorHandlingMiddleware(
         RequestDelegate next,
         //IStringLocalizer<ErrorHandingMiddleware> localizer,
-        ILogger<ErrorHandingMiddleware> logger
+        ILogger<ErrorHandlingMiddleware> logger
         )
     {
         private static readonly Action<ILogger, string, Exception> LOGGER_MESSAGE =
@@ -29,18 +29,18 @@ namespace TimeAttendanceApp.Infrostructure.Errors
             }
         }
 
-        private async Task HandleExceptionAsync(HttpContext context, Exception exception, ILogger<ErrorHandingMiddleware> loger/*, IStringLocalizer<ErrorHandingMiddleware> localizer*/)
+        private async Task HandleExceptionAsync(HttpContext context, Exception exception, ILogger<ErrorHandlingMiddleware> logger/*, IStringLocalizer<ErrorHandingMiddleware> localizer*/)
         {
             string? result;
-            switch (exception )
+            switch (exception)
             {
                 case ServiceException se:
                     context.Response.StatusCode = (int)se.code;
-                    result = exception.Message;
+                    result = se.Message;
                     break;
                 default:
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    LOGGER_MESSAGE(loger, "Unhandled Exception", exception);
+                    LOGGER_MESSAGE(logger, "Unhandled Exception", exception);
                     result = JsonSerializer.Serialize(/*new { errors = "Internal Server Error" }*/ exception.Message);
                     break;
             }
