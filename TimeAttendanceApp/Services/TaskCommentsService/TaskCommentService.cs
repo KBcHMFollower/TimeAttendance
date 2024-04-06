@@ -7,6 +7,7 @@ using TimeAttendanceApp.Infrostructure.DTOs.TaskCommentsDto;
 using TimeAttendanceApp.Infrostructure.DTOs.TaskDtos;
 using TimeAttendanceApp.Infrostructure.Errors;
 using TimeAttendanceApp.Models;
+using TimeAttendanceApp.Services.FileProccessingService;
 
 namespace TimeAttendanceApp.Services.TaskCommentsService
 {
@@ -14,12 +15,14 @@ namespace TimeAttendanceApp.Services.TaskCommentsService
     {
 
         readonly private ApplicationDbContext _context;
+        readonly private IFileProcessingService _fileProcessingService;
 
         
 
-        public TaskCommentService(ApplicationDbContext _context) 
+        public TaskCommentService(ApplicationDbContext _context, IFileProcessingService _fileProcessingService) 
         { 
             this._context = _context;
+            this._fileProcessingService = _fileProcessingService;
         }
 
         CommentResponseDto CreateResponseDto(TaskComment comment)
@@ -27,7 +30,6 @@ namespace TimeAttendanceApp.Services.TaskCommentsService
             CommentResponseDto responseDto = new CommentResponseDto
             {
                 id = comment.Id,
-                taskId = comment.Task.Id,
                 commentType = comment.CommentType
             };
             if (comment.CommentType == 0)
@@ -44,7 +46,6 @@ namespace TimeAttendanceApp.Services.TaskCommentsService
         public async Task<CommentResponseDto?> Create(Guid taskId, TaskCommentDto commentCreateDto)
         {
             Models.Task? task = await _context.Tasks
-                .AsNoTracking()
                 .FirstOrDefaultAsync(item=>item.Id == taskId);
 
             if (task == null)
@@ -70,7 +71,7 @@ namespace TimeAttendanceApp.Services.TaskCommentsService
             {
                 if (commentCreateDto.file != null)
                 {
-                    taskComment.Content = commentCreateDto.file;
+                    taskComment.Content = await _fileProcessingService.ConvertFileToByteArrayAsync(commentCreateDto.file);
                 }
                 else
                 {
@@ -109,6 +110,16 @@ namespace TimeAttendanceApp.Services.TaskCommentsService
 
         public async Task<List<CommentResponseDto>> GetAll(Guid taskId, FilterDto projGetAllDto)
         {
+
+            Models.Task? Task = await _context.Tasks
+                .AsNoTracking()
+                .FirstOrDefaultAsync(item => item.Id == taskId);
+
+            if (Task == null)
+            {
+                throw ServiceException.NotFound("Project not found");
+            }
+
             var totalCount = await _context.TaskComments
                 .AsNoTracking()
                 .Where(item=>item.Task.Id == taskId)
@@ -169,6 +180,7 @@ namespace TimeAttendanceApp.Services.TaskCommentsService
             return CreateResponseDto(resComment);
         }
 
+
         public async Task<CommentResponseDto?> Update(Guid commentId, TaskCommentDto commentUpdateDto)
         {
             TaskComment? Comment = await _context.TaskComments
@@ -195,7 +207,7 @@ namespace TimeAttendanceApp.Services.TaskCommentsService
             {
                 if (commentUpdateDto.file != null)
                 {
-                    Comment.Content = commentUpdateDto.file;
+                    Comment.Content = await _fileProcessingService.ConvertFileToByteArrayAsync(commentUpdateDto.file);
                 }
                 else
                 {

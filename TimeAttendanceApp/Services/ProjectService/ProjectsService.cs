@@ -117,6 +117,7 @@ namespace TimeAttendanceApp.Services.ProjectService
             }
 
             await _context.Projects
+                .Where(item=>item.Id == projectId)
                 .ExecuteUpdateAsync(proj =>
                     proj.SetProperty(i => i.ProjectName, projUpdateDto.name));
 

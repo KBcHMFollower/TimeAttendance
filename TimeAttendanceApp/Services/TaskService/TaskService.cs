@@ -98,7 +98,8 @@ namespace TimeAttendanceApp.Services.TaskService
             if (skipAmount < 0) { skipAmount = 0; }
 
             IQueryable<Models.Task> query = _context.Tasks
-                .AsNoTracking();
+                .AsNoTracking()
+                .Where(item => item.Project.Id == projectId);
 
             if (taskGetAllDto.OrderType == "desc")
             {

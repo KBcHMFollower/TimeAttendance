@@ -2,7 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography.X509Certificates;
 using TimeAttendanceApp.Context;
 using TimeAttendanceApp.Infrostructure.Errors;
+using TimeAttendanceApp.Services.FileProccessingService;
 using TimeAttendanceApp.Services.ProjectService;
+using TimeAttendanceApp.Services.TaskCommentsService;
 using TimeAttendanceApp.Services.TaskService;
 
 internal class Program
@@ -11,7 +13,8 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllersWithViews();
+        builder.Services.AddControllers()
+            .AddNewtonsoftJson();
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -26,6 +29,8 @@ internal class Program
     {
         services.AddScoped<IProjectService, ProjectsService>();
         services.AddScoped<ITaskService, TaskService>();
+        services.AddScoped<ITaskCommentService, TaskCommentService>();
+        services.AddSingleton<IFileProcessingService, FileProcessingService>();
 
         services.AddCors(options =>
         {

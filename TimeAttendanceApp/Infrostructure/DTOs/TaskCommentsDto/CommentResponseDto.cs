@@ -6,6 +6,5 @@
         public byte commentType { get; set; }
         public byte[]? file { get; set; }
         public Guid id { get; set; }
-        public Guid taskId { get; set; }
     }
 }
