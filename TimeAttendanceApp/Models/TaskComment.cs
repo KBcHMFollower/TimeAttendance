@@ -14,6 +14,6 @@ namespace TimeAttendanceApp.Models
         public byte CommentType { get; set; }
         [Required]
         public byte[] Content { get; set; }
-        public string FileName { get; set; }
+        public string? FileName { get; set; }
     }
 }

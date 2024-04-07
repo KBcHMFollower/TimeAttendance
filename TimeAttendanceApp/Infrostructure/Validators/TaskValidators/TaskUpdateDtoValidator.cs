@@ -8,12 +8,10 @@ namespace TimeAttendanceApp.Infrostructure.Validators.TaskValidators
         public TaskUpdateDtoValidator() 
         {
             RuleFor(i => i.name)
-                .NotEmpty()
-                .NotNull()
                 .MaximumLength(255)
                 .WithMessage("The name must be up to 255 characters long");
             RuleFor(i => i.endDate)
-                .Must((dto, endDate) => endDate > dto.startDate)
+                .Must((dto, endDate) => (endDate > dto.startDate) || !endDate.HasValue)
                 .WithMessage("endDate < startDate");
             RuleFor(i => i.name)
                 .Must((dto, name) => !string.IsNullOrEmpty(name) || dto.startDate.HasValue || dto.endDate.HasValue)

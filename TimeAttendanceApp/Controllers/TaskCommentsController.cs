@@ -50,7 +50,7 @@ namespace TimeAttendanceApp.Controllers
 
         [HttpPatch("{commentId}")]
         [DisableRequestSizeLimit]
-        public async Task<IActionResult> Update([FromRoute] Guid commentId, [FromBody] CommentRequestDto updateDto)
+        public async Task<IActionResult> Update([FromRoute] Guid commentId, [FromForm] CommentRequestDto updateDto)
         {
             CommentResponseDto? resComment = await commentService.Update(commentId, updateDto);
             return Ok(resComment);

@@ -216,7 +216,9 @@ namespace TimeAttendanceApp.Services.TaskCommentsService
             {
                 if (commentUpdateDto.text != null)
                 {
+                    Comment.CommentType = 0;
                     Comment.Content = Encoding.UTF8.GetBytes(commentUpdateDto.text);
+                    Comment.FileName = null;
                 }
                 else
                 {
@@ -227,7 +229,9 @@ namespace TimeAttendanceApp.Services.TaskCommentsService
             {
                 if (commentUpdateDto.file != null)
                 {
+                    Comment.CommentType = 1;
                     Comment.Content = await _fileProcessingService.ConvertFileToByteArrayAsync(commentUpdateDto.file);
+                    Comment.FileName = commentUpdateDto.file.FileName;
                 }
                 else
                 {
