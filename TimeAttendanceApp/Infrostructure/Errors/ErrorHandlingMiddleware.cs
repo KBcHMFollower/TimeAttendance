@@ -35,7 +35,7 @@ namespace TimeAttendanceApp.Infrostructure.Errors
             switch (exception)
             {
                 case ServiceException se:
-                    context.Response.StatusCode = (int)se.code;
+                    context.Response.StatusCode = (int)se.Code;
                     result = se.Message;
                     break;
                 default:

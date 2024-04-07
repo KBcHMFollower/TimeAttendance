@@ -1,11 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.Threading.Tasks;
 using TimeAttendanceApp.Context;
 using TimeAttendanceApp.Infrostructure.DTOs;
+using TimeAttendanceApp.Infrostructure.DTOs.ProjectDtos;
 using TimeAttendanceApp.Infrostructure.DTOs.TaskCommentsDto;
 using TimeAttendanceApp.Infrostructure.DTOs.TaskDtos;
 using TimeAttendanceApp.Infrostructure.Errors;
+using TimeAttendanceApp.Infrostructure.Validators.CommentValidators;
 using TimeAttendanceApp.Models;
 using TimeAttendanceApp.Services.FileProccessingService;
 
@@ -17,13 +21,12 @@ namespace TimeAttendanceApp.Services.TaskCommentsService
         readonly private ApplicationDbContext _context;
         readonly private IFileProcessingService _fileProcessingService;
 
-        
 
-        public TaskCommentService(ApplicationDbContext _context, IFileProcessingService _fileProcessingService) 
-        { 
-            this._context = _context;
-            this._fileProcessingService = _fileProcessingService;
-        }
+    public TaskCommentService(ApplicationDbContext _context, IFileProcessingService _fileProcessingService) 
+            { 
+                this._context = _context;
+                this._fileProcessingService = _fileProcessingService;
+            }
 
         CommentResponseDto CreateResponseDto(TaskComment comment)
         {
@@ -43,8 +46,16 @@ namespace TimeAttendanceApp.Services.TaskCommentsService
             return responseDto;
         }
 
-        public async Task<CommentResponseDto?> Create(Guid taskId, TaskCommentDto commentCreateDto)
+        public async Task<CommentResponseDto?> Create(Guid taskId, CommentRequestDto commentCreateDto)
         {
+            CommentsRequestDtoValidator validator = new CommentsRequestDtoValidator();
+            ValidationResult validRes = validator.Validate(commentCreateDto);
+
+            if (!validRes.IsValid)
+            {
+                throw ServiceException.BadRequest("Validation Error", validRes.Errors);
+            }
+
             Models.Task? task = await _context.Tasks
                 .FirstOrDefaultAsync(item=>item.Id == taskId);
 
@@ -182,8 +193,16 @@ namespace TimeAttendanceApp.Services.TaskCommentsService
         }
 
 
-        public async Task<CommentResponseDto?> Update(Guid commentId, TaskCommentDto commentUpdateDto)
+        public async Task<CommentResponseDto?> Update(Guid commentId, CommentRequestDto commentUpdateDto)
         {
+            CommentsUpdateDtoValidator validator = new CommentsUpdateDtoValidator();
+            ValidationResult validRes = validator.Validate(commentUpdateDto);
+
+            if (!validRes.IsValid)
+            {
+                throw ServiceException.BadRequest("Validation Error", validRes.Errors);
+            }
+
             TaskComment? Comment = await _context.TaskComments
                    .FirstOrDefaultAsync(item => item.Id == commentId);
 

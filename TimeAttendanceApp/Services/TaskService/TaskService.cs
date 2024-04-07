@@ -7,6 +7,10 @@ using TimeAttendanceApp.Models;
 using TimeAttendanceApp.Infrostructure.Errors;
 using System.Threading.Tasks;
 using TimeAttendanceApp.Infrostructure.DTOs.TaskDtos;
+using FluentValidation;
+using TimeAttendanceApp.Infrostructure.DTOs.TaskCommentsDto;
+using FluentValidation.Results;
+using TimeAttendanceApp.Infrostructure.Validators.TaskValidators;
 
 namespace TimeAttendanceApp.Services.TaskService
 {
@@ -18,8 +22,29 @@ namespace TimeAttendanceApp.Services.TaskService
         {
             _context = context;
         }
-        public async Task<Models.Task?> Create(Guid projectId, TaskDto taskCreateDto)
+
+    TaskResponseDto CreateResponseDto(Models.Task task)
         {
+            TaskResponseDto response = new TaskResponseDto
+            {
+                id = task.Id,
+                name = task.TaskName,
+                startDate = task.StartDate,
+                cancelDate = task.CancelDate
+            };
+
+            return response;
+        }
+        public async Task<TaskResponseDto?> Create(Guid projectId, TaskRequestDto taskCreateDto)
+        {
+            TaskRequestDtoValidator validator = new TaskRequestDtoValidator();
+            ValidationResult validRes = validator.Validate(taskCreateDto);
+
+            if (!validRes.IsValid)
+            {
+                throw ServiceException.BadRequest("Validation Error", validRes.Errors);
+            }
+
             Project? project = await _context.Projects
                 .FirstOrDefaultAsync(item=>item.Id == projectId);
 
@@ -32,7 +57,7 @@ namespace TimeAttendanceApp.Services.TaskService
             Models.Task newTask = new Models.Task
             {
                 Id = taskId,
-                TaskName = taskCreateDto.taskName,
+                TaskName = taskCreateDto.name,
                 Project = project,
                 StartDate = taskCreateDto.startDate,
                 CancelDate = DateTime.UtcNow
@@ -45,10 +70,10 @@ namespace TimeAttendanceApp.Services.TaskService
                 .AsNoTracking()
                 .FirstOrDefaultAsync(item=>item.Id == taskId);
 
-            return resTask;
+            return CreateResponseDto(resTask);
         }
 
-        public async Task<Models.Task> Delete( Guid taskId)
+        public async Task<TaskResponseDto> Delete( Guid taskId)
         {
 
             Models.Task? Task = await _context.Tasks
@@ -64,10 +89,10 @@ namespace TimeAttendanceApp.Services.TaskService
                     .Where(item => item.Id == taskId)
                     .ExecuteDeleteAsync();
 
-            return Task;
+            return CreateResponseDto(Task);
         }
 
-        public async Task<List<Models.Task>> GetAll(Guid projectId, FilterDto taskGetAllDto)
+        public async Task<List<TaskResponseDto>> GetAll(Guid projectId, FilterDto taskGetAllDto)
         {
             Project? Proj = await _context.Projects
                 .AsNoTracking()
@@ -117,11 +142,15 @@ namespace TimeAttendanceApp.Services.TaskService
                 .Take(taskGetAllDto.count)
                 .ToListAsync();
 
-            return entities;
+            List<TaskResponseDto> response = entities
+                .Select(i=>CreateResponseDto(i))
+                .ToList();
+
+            return response;
 
         }
 
-        public async Task<Models.Task> GetOne(Guid taskId)
+        public async Task<TaskResponseDto> GetOne(Guid taskId)
         {
             Models.Task? resTask = await _context.Tasks
                     .AsNoTracking()
@@ -132,11 +161,19 @@ namespace TimeAttendanceApp.Services.TaskService
                 throw ServiceException.NotFound("Project not found");
             }
 
-            return resTask;
+            return CreateResponseDto(resTask);
         }
 
-        public async Task<Models.Task?> Update(Guid taskId, TaskUpdateDto taskUpdateDto)
+        public async Task<TaskResponseDto?> Update(Guid taskId, TaskUpdateDto taskUpdateDto)
         {
+            TaskUpdateDtoValidator validator = new TaskUpdateDtoValidator();
+            ValidationResult validRes = validator.Validate(taskUpdateDto);
+
+            if (!validRes.IsValid)
+            {
+                throw ServiceException.BadRequest("Validation Error", validRes.Errors);
+            }
+
             Models.Task? Task = await _context.Tasks
                     .FirstOrDefaultAsync(item => item.Id == taskId);
 
@@ -146,9 +183,9 @@ namespace TimeAttendanceApp.Services.TaskService
             }
 
             
-            if (taskUpdateDto.taskName != null)
+            if (taskUpdateDto.name != null)
             {
-                Task.TaskName = taskUpdateDto.taskName;
+                Task.TaskName = taskUpdateDto.name;
             }
             if (taskUpdateDto.endDate.HasValue)
             {
@@ -161,7 +198,7 @@ namespace TimeAttendanceApp.Services.TaskService
 
             await _context.SaveChangesAsync();
 
-            return Task;
+            return CreateResponseDto(Task);
         }
     }
 }

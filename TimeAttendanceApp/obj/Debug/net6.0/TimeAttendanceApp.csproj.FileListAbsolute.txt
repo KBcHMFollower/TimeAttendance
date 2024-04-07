@@ -54,3 +54,5 @@ C:\Users\Streliziy\Desktop\developing\Web\Proj\TimeAttendanceApp\TimeAttendanceA
 C:\Users\Streliziy\Desktop\developing\Web\Proj\TimeAttendanceApp\TimeAttendanceApp\bin\Debug\net6.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 C:\Users\Streliziy\Desktop\developing\Web\Proj\TimeAttendanceApp\TimeAttendanceApp\bin\Debug\net6.0\Newtonsoft.Json.dll
 C:\Users\Streliziy\Desktop\developing\Web\Proj\TimeAttendanceApp\TimeAttendanceApp\bin\Debug\net6.0\Newtonsoft.Json.Bson.dll
+C:\Users\Streliziy\Desktop\developing\Web\Proj\TimeAttendanceApp\TimeAttendanceApp\bin\Debug\net6.0\FluentValidation.dll
+C:\Users\Streliziy\Desktop\developing\Web\Proj\TimeAttendanceApp\TimeAttendanceApp\bin\Debug\net6.0\FluentValidator.dll

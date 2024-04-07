@@ -21,7 +21,7 @@ namespace TimeAttendanceApp.Controllers
 
         [HttpPost]
         [DisableRequestSizeLimit]
-        public async Task<IActionResult?> Create([FromRoute] Guid taskId, [FromForm] TaskCommentDto createDto)
+        public async Task<IActionResult?> Create([FromRoute] Guid taskId, [FromForm] CommentRequestDto createDto)
         {
             CommentResponseDto? resComment = await commentService.Create(taskId, createDto);
             return CreatedAtAction("Get", new { id = resComment.id }, resComment);
@@ -50,7 +50,7 @@ namespace TimeAttendanceApp.Controllers
 
         [HttpPatch("{commentId}")]
         [DisableRequestSizeLimit]
-        public async Task<IActionResult> Update([FromRoute] Guid commentId, [FromBody] TaskCommentDto updateDto)
+        public async Task<IActionResult> Update([FromRoute] Guid commentId, [FromBody] CommentRequestDto updateDto)
         {
             CommentResponseDto? resComment = await commentService.Update(commentId, updateDto);
             return Ok(resComment);

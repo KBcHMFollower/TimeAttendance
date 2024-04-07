@@ -18,37 +18,37 @@ namespace TimeAttendanceApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult?> Create([FromBody] ProjDto createDto)
+        public async Task<IActionResult?> Create([FromBody] ProjectRequestDto createDto)
         {
-            Project? resProj = await taskService.Create(createDto);
-            return CreatedAtAction("Get", new { id = resProj.Id }, resProj);
+            ProjectResponseDto? resProj = await taskService.Create(createDto);
+            return CreatedAtAction("Get", new { id = resProj.id }, resProj);
         }
 
         [HttpDelete("{projectId}")]
         public async Task<IActionResult> Delete([FromRoute] Guid projectId)
         {
-            Project? resProj = await taskService.Delete(projectId);
+            ProjectResponseDto? resProj = await taskService.Delete(projectId);
             return Ok(resProj);
         }
 
         [HttpGet("{projectId}")]
         public async Task<IActionResult> GetOne([FromRoute] Guid projectId)
         {
-            Project? resProj = await taskService.GetOne(projectId);
+            ProjectResponseDto? resProj = await taskService.GetOne(projectId);
             return Ok(resProj);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] FilterDto FilterDto)
         {
-            List<Project>? resProj = await taskService.GetAll(FilterDto);
+            List<ProjectResponseDto>? resProj = await taskService.GetAll(FilterDto);
             return Ok(resProj);
         }
 
         [HttpPatch("{projectId}")]
-        public async Task<IActionResult> Update([FromRoute] Guid projectId, [FromBody] ProjDto updateDto)
+        public async Task<IActionResult> Update([FromRoute] Guid projectId, [FromBody] ProjectRequestDto updateDto)
         {
-            Project? resProj = await taskService.Update(projectId, updateDto);
+            ProjectResponseDto? resProj = await taskService.Update(projectId, updateDto);
             return Ok(resProj);
         }
     }

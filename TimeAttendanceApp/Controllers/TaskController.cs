@@ -21,37 +21,37 @@ namespace TimeAttendanceApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult?> Create([FromRoute] Guid projectId, [FromBody] TaskDto createDto)
+        public async Task<IActionResult?> Create([FromRoute] Guid projectId, [FromBody] TaskRequestDto createDto)
         {
-            Models.Task? resTask = await taskService.Create(projectId, createDto);
-            return CreatedAtAction("Get", new { id = resTask.Id }, resTask);
+           TaskResponseDto? resTask = await taskService.Create(projectId, createDto);
+            return CreatedAtAction("Get", new { id = resTask.id }, resTask);
         }
 
         [HttpDelete("{taskId}")]
         public async Task<IActionResult> Delete([FromRoute] Guid taskId)
         {
-            Models.Task? resTask = await taskService.Delete(taskId);
+            TaskResponseDto? resTask = await taskService.Delete(taskId);
             return Ok(resTask);
         }
 
         [HttpGet("{taskId}")]
         public async Task<IActionResult> GetOne([FromRoute] Guid taskId)
         {
-            Models.Task? resTask = await taskService.GetOne(taskId);
+            TaskResponseDto? resTask = await taskService.GetOne(taskId);
             return Ok(resTask);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll([FromRoute] Guid projectId, [FromQuery] FilterDto FilterDto)
         {
-            List<Models.Task>? resTask = await taskService.GetAll(projectId, FilterDto);
+            List<TaskResponseDto>? resTask = await taskService.GetAll(projectId, FilterDto);
             return Ok(resTask);
         }
 
         [HttpPatch("{taskId}")]
         public async Task<IActionResult> Update([FromRoute] Guid taskId, [FromBody] TaskUpdateDto updateDto)
         {
-            Models.Task? resTask = await taskService.Update(taskId, updateDto);
+            TaskResponseDto? resTask = await taskService.Update(taskId, updateDto);
             return Ok(resTask);
         }
     }

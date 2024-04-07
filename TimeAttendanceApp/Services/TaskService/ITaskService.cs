@@ -7,10 +7,10 @@ namespace TimeAttendanceApp.Services.TaskService
 {
     public interface ITaskService
     {
-        public Task<Models.Task?> Create(Guid projectId, TaskDto taskCreateDto);
-        public Task<Models.Task> GetOne(Guid taskId);
-        public Task<List<Models.Task>> GetAll(Guid projectId, FilterDto taskGetAllDto);
-        public Task<Models.Task?> Update(Guid taskId, TaskUpdateDto taskUpdateDto);
-        public Task<Models.Task> Delete(Guid taskId);
+        public Task<TaskResponseDto?> Create(Guid projectId, TaskRequestDto taskCreateDto);
+        public Task<TaskResponseDto> GetOne(Guid taskId);
+        public Task<List<TaskResponseDto>> GetAll(Guid projectId, FilterDto taskGetAllDto);
+        public Task<TaskResponseDto?> Update(Guid taskId, TaskUpdateDto taskUpdateDto);
+        public Task<TaskResponseDto> Delete(Guid taskId);
     }
 }

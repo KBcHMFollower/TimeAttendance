@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "oA4mTFJd1lvvsaUH9D31SjOiF/dqu16UmuCVeUdjxVX3mYrU5/c+Q3MwClEnSUSTCyXqsgnQM1ah/ICKiPovwA==",
+  "dgSpecHash": "DOMjNE49RUCFhqVuSvvt6UofpIwbZyM9vluNXrakCfePSEMoQqHx00IwrfmHr8aWFCiaDhIrBHeH9pecGmSZYQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Streliziy\\Desktop\\developing\\Web\\Proj\\TimeAttendanceApp\\TimeAttendanceApp\\TimeAttendanceApp.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Streliziy\\.nuget\\packages\\fluentvalidation\\11.9.0\\fluentvalidation.11.9.0.nupkg.sha512",
+    "C:\\Users\\Streliziy\\.nuget\\packages\\fluentvalidator\\2.0.4\\fluentvalidator.2.0.4.nupkg.sha512",
     "C:\\Users\\Streliziy\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Streliziy\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\6.0.28\\microsoft.aspnetcore.jsonpatch.6.0.28.nupkg.sha512",
     "C:\\Users\\Streliziy\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\6.0.28\\microsoft.aspnetcore.mvc.newtonsoftjson.6.0.28.nupkg.sha512",

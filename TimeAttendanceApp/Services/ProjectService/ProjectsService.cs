@@ -4,6 +4,9 @@ using TimeAttendanceApp.Models;
 using TimeAttendanceApp.Infrostructure.DTOs.ProjectDtos;
 using TimeAttendanceApp.Infrostructure.Errors;
 using TimeAttendanceApp.Infrostructure.DTOs;
+using FluentValidation;
+using FluentValidation.Results;
+using TimeAttendanceApp.Infrostructure.Validators.ProjectValidators;
 
 namespace TimeAttendanceApp.Services.ProjectService
 {
@@ -16,8 +19,27 @@ namespace TimeAttendanceApp.Services.ProjectService
             _context = context;
         }
 
-        public async Task<Project?> Create(ProjDto projCreateDto)
+        ProjectResponseDto CreateResponseDto(Project project)
         {
+            ProjectResponseDto projectResponseDto = new ProjectResponseDto
+            {
+                name = project.ProjectName,
+                id = project.Id,
+            };
+
+            return projectResponseDto;
+        }
+
+    public async Task<ProjectResponseDto?> Create(ProjectRequestDto projCreateDto)
+        {
+            ProjectRequestDtoValidator validator = new ProjectRequestDtoValidator();
+            ValidationResult validRes = validator.Validate(projCreateDto);
+
+            if (!validRes.IsValid)
+            {
+                throw ServiceException.BadRequest("Validation Error", validRes.Errors);
+            }
+
             Guid projectId = Guid.NewGuid();
             Project? project = new Project {Id = projectId, ProjectName = projCreateDto.name};
 
@@ -28,10 +50,10 @@ namespace TimeAttendanceApp.Services.ProjectService
                 .AsNoTracking()
                 .FirstOrDefaultAsync(item=>item.Id == projectId);
 
-            return createdProj;
+            return CreateResponseDto(createdProj);
         }
 
-        public async Task<Project> Delete(Guid projectId)
+        public async Task<ProjectResponseDto> Delete(Guid projectId)
         {
             Project? Proj = await _context.Projects
                     .AsNoTracking()
@@ -46,10 +68,10 @@ namespace TimeAttendanceApp.Services.ProjectService
                     .Where(item => item.Id == projectId)
                     .ExecuteDeleteAsync();
 
-            return Proj;
+            return CreateResponseDto(Proj);
         }
 
-        public async Task<List<Project>> GetAll(FilterDto projGetAllDto)
+        public async Task<List<ProjectResponseDto>> GetAll(FilterDto projGetAllDto)
         {
             var totalCount = await _context.Projects
                 .AsNoTracking()
@@ -88,10 +110,14 @@ namespace TimeAttendanceApp.Services.ProjectService
                 .Take(projGetAllDto.count)
                 .ToListAsync();
 
-            return entities;
+            List<ProjectResponseDto> response = entities
+                .Select(i=>CreateResponseDto(i))
+                .ToList();
+
+            return response;
         }
 
-        public async Task<Project> GetOne(Guid projectId)
+        public async Task<ProjectResponseDto> GetOne(Guid projectId)
         {
             Project? resProj = await _context.Projects
                     .AsNoTracking()
@@ -102,11 +128,19 @@ namespace TimeAttendanceApp.Services.ProjectService
                 throw ServiceException.NotFound("Project not found");
             }
 
-            return resProj;
+            return CreateResponseDto(resProj);
         }
 
-        public async Task<Project?> Update(Guid projectId, ProjDto projUpdateDto)
+        public async Task<ProjectResponseDto?> Update(Guid projectId, ProjectRequestDto projUpdateDto)
         {
+            ProjectUpdateDtoValidator validator = new ProjectUpdateDtoValidator();
+            ValidationResult validRes = validator.Validate(projUpdateDto);
+
+            if (!validRes.IsValid)
+            {
+                throw ServiceException.BadRequest("Validation Error", validRes.Errors);
+            }
+
             Project? Proj = await _context.Projects
                     .AsNoTracking()
                     .FirstOrDefaultAsync(item => item.Id == projectId);
@@ -125,7 +159,7 @@ namespace TimeAttendanceApp.Services.ProjectService
                     .AsNoTracking()
                     .FirstOrDefaultAsync(item => item.Id == projectId);
 
-            return Proj;
+            return CreateResponseDto(Proj);
         }
     }
 }

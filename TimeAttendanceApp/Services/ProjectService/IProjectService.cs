@@ -6,11 +6,11 @@ namespace TimeAttendanceApp.Services.ProjectService
 {
     public interface IProjectService
     {
-        public Task<Project?> Create(ProjDto projCreateDto);
-        public Task<Project> GetOne(Guid projectId);
-        public Task<List<Project>> GetAll(FilterDto projGetAllDto);
-        public Task<Project?> Update(Guid projectId, ProjDto projUpdateDto);
-        public Task<Project> Delete(Guid projectId);
+        public Task<ProjectResponseDto?> Create(ProjectRequestDto projCreateDto);
+        public Task<ProjectResponseDto> GetOne(Guid projectId);
+        public Task<List<ProjectResponseDto>> GetAll(FilterDto projGetAllDto);
+        public Task<ProjectResponseDto?> Update(Guid projectId, ProjectRequestDto projUpdateDto);
+        public Task<ProjectResponseDto> Delete(Guid projectId);
 
     }
 }
