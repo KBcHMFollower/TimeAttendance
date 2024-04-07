@@ -55,5 +55,14 @@ namespace TimeAttendanceApp.Controllers
             CommentResponseDto? resComment = await commentService.Update(commentId, updateDto);
             return Ok(resComment);
         }
+
+        [HttpGet("{commentId}/download")]
+        public async Task<IActionResult> DownloadFile([FromRoute] Guid commentId)
+        {
+            FileServiceResponse fileRes = await commentService.DownloadFile(commentId);
+            string contentType = "application/octet-stream";
+
+            return File(fileRes.memoryStream, contentType, fileRes.fileName);
+        }
     }
 }

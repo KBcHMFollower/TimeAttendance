@@ -11,5 +11,6 @@ namespace TimeAttendanceApp.Services.TaskCommentsService
         public Task<List<CommentResponseDto>> GetAll(Guid taskId, FilterDto commentGetAllDto);
         public Task<CommentResponseDto?> Update(Guid commentId, TaskCommentDto commentUpdateDto);
         public Task<CommentResponseDto> Delete(Guid commentId);
+        public Task<FileServiceResponse> DownloadFile(Guid commentId);
     }
 }

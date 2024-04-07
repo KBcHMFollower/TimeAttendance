@@ -38,7 +38,7 @@ namespace TimeAttendanceApp.Services.TaskCommentsService
             }
             else
             {
-                responseDto.file = comment.Content;
+                responseDto.text = comment.FileName;
             }
             return responseDto;
         }
@@ -72,6 +72,7 @@ namespace TimeAttendanceApp.Services.TaskCommentsService
                 if (commentCreateDto.file != null)
                 {
                     taskComment.Content = await _fileProcessingService.ConvertFileToByteArrayAsync(commentCreateDto.file);
+                    taskComment.FileName = commentCreateDto.file.FileName;
                 }
                 else
                 {
@@ -218,6 +219,33 @@ namespace TimeAttendanceApp.Services.TaskCommentsService
             await _context.SaveChangesAsync();
 
             return CreateResponseDto(Comment);
+        }
+
+        public async Task<FileServiceResponse> DownloadFile(Guid commentId)
+        {
+            TaskComment? file = await _context.TaskComments
+                .AsNoTracking()
+                .FirstOrDefaultAsync(item => item.Id == commentId);
+
+            if (file == null || file.CommentType == 0) 
+            {
+                throw ServiceException.NotFound("Comment not found");
+            }
+
+            if (file.CommentType == 0)
+            {
+                throw ServiceException.BadRequest("Comment type is text");
+            }
+
+            var memoryStream = new MemoryStream(file.Content);
+
+            FileServiceResponse fileRes = new FileServiceResponse
+            {
+                memoryStream = memoryStream,
+                fileName = file.FileName
+            };
+
+            return fileRes;
         }
     }
 }
